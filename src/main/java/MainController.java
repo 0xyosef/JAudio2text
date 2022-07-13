@@ -1,7 +1,6 @@
 import com.google.gson.Gson;
 
 import java.io.IOException;
-import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.http.HttpClient;
@@ -52,16 +51,14 @@ public class MainController {
                 .GET()
                 .build();
         httpClient = HttpClient.newHttpClient();
-        while (true) {
+        do {
             HttpResponse<String> getResponse = httpClient.send(gutRequest, HttpResponse.BodyHandlers.ofString());
             // Convert the response to a Transcript object and print it
             transcript = gson.fromJson(getResponse.body(), Transcript.class);
             System.out.println(transcript.getStatus());
-            if ("completed".equals(transcript.getStatus()) || "failed".equals(transcript.getStatus())) {
-                break;
-            }
-            Thread.sleep(1000);
-        }
+
+        } while (!"completed".equals(transcript.getStatus()) || !"failed".equals(transcript.getStatus()));
+        Thread.sleep(1000);
         System.out.println("Transcription completed");
         System.out.println(transcript.getText());
     }
