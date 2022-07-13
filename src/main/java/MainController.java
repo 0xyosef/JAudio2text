@@ -54,6 +54,7 @@ public class MainController {
         httpClient = HttpClient.newHttpClient();
         while (true) {
             HttpResponse<String> getResponse = httpClient.send(gutRequest, HttpResponse.BodyHandlers.ofString());
+            // Convert the response to a Transcript object and print it
             transcript = gson.fromJson(getResponse.body(), Transcript.class);
             System.out.println(transcript.getStatus());
             if ("completed".equals(transcript.getStatus()) || "failed".equals(transcript.getStatus())) {
