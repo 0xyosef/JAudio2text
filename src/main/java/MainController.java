@@ -25,7 +25,7 @@ public class MainController {
         gson = new Gson();
         transcript = gson.fromJson(json, Transcript.class);
     }
-    public void setPostRequest(String URL_transcript,String api_key, String jsonRequest ) throws URISyntaxException {
+    public void sendPostRequest(String URL_transcript, String api_key, String jsonRequest ) throws URISyntaxException {
         postRequest = HttpRequest.newBuilder()
                 .uri(new URI(URL_transcript))
                 .header("Authorization", Api_key)
@@ -38,7 +38,7 @@ public class MainController {
         transcript.setAudio_url(URL_audio);
         String jsonRequest = gson.toJson(transcript);
         //System.out.println(jsonRequest);
-        setPostRequest(URL_transcript, Api_key, jsonRequest);
+        sendPostRequest(URL_transcript, Api_key, jsonRequest);
     }
 
     // Send the request and get the response
@@ -69,7 +69,7 @@ public class MainController {
             }
             Thread.sleep(1000);
         }
-        System.out.println("Transcript is complete");
+        System.out.println("Transcript is complete:");
         System.out.println(transcript.getText());
     }
 }
