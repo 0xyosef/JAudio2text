@@ -17,7 +17,7 @@ public class MainController {
     MainController() throws URISyntaxException, IOException, InterruptedException {
         postRequest(URL_transcript, Api_key);
         getResponse();
-        getRequest(URL_transcript);
+        getRequest(URL_transcript, Api_key);
     }
 
 
@@ -45,21 +45,26 @@ public class MainController {
         System.out.println(transcript.getId());
     }
 
-    public void getRequest(String URL_transcript) throws URISyntaxException, IOException, InterruptedException {
-        HttpRequest gutRequest = HttpRequest.newBuilder()
-                .uri(new URI(URL_transcript + transcript.getId()))
-                .GET()
-                .build();
+    public void getRequest(String URL_transcript ,String Api_key) throws URISyntaxException, IOException, InterruptedException {
+         HttpRequest gutRequest = HttpRequest.newBuilder()
+                 .uri(new URI(URL_transcript + "/" + transcript.getId()))
+                 .header("Authorization", Api_key)
+                 .GET()
+                 .build();
         httpClient = HttpClient.newHttpClient();
-        do {
+        while (true) {
+
             HttpResponse<String> getResponse = httpClient.send(gutRequest, HttpResponse.BodyHandlers.ofString());
-            // Convert the response to a Transcript object and print it
             transcript = gson.fromJson(getResponse.body(), Transcript.class);
             System.out.println(transcript.getStatus());
-
-        } while (!"completed".equals(transcript.getStatus()) || !"failed".equals(transcript.getStatus()));
-        Thread.sleep(1000);
-        System.out.println("Transcription completed");
+            if("completed".equals(transcript.getStatus()) || "error".equals(transcript.getStatus())) {
+                break;
+            }
+            Thread.sleep(1000);
+        }
+        System.out.println("Transcript is complete");
         System.out.println(transcript.getText());
+
+
     }
 }
